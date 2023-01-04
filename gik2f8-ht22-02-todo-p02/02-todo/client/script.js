@@ -218,19 +218,18 @@ function renderList() {
 
     /* De hämtade uppgifterna från servern via api:et getAll-funktion får heta tasks, eftersom callbackfunktionen som skickades till then() har en parameter som är döpt så.
     Det är tasks-parametern som är innehållet i promiset. */
-
+    tasks.sort((a, b) => (a.dueDate < b.dueDate) ? 1 : (a.dueDate > b.dueDate) ? -1 : 0);
     /* Koll om det finns någonting i tasks och om det är en array med längd större än 0 */
     if (tasks && tasks.length > 0) {
       //sorterar tasks efter datum
-      tasks.sort(function (a, b) {
-        return a.dueDate > b.dueDate;
-      });
-      tasks.sort(function (a, b) {
-        return a.completed > b.completed;
-      });
       /* Om tasks är en lista som har längd större än 0 loopas den igenom med forEach. forEach tar, likt then, en callbackfunktion. 
       Callbackfunktionen tar emot namnet på varje enskilt element i arrayen, som i detta fall är ett objekt innehållande en uppgift.  */
       tasks.forEach((task) => {
+        if(task.completed){
+          todoListElement.insertAdjacentHTML('beforeend',renderTask(task));
+        }else{
+          todoListElement.insertAdjacentHTML('afterbegin',renderTask(task));
+        }
         /* Om vi bryter ned nedanstående rad får vi något i stil med:
         1. todoListElement: ul där alla uppgifter ska finnas
         2. insertAdjacentHTML: DOM-metod som gör att HTML kan läggas till inuti ett element på en given position
@@ -240,7 +239,6 @@ function renderList() {
         */
 
         /* Denna kod körs alltså en gång per element i arrayen tasks, dvs. en  gång för varje uppgiftsobjekt i listan. */
-        todoListElement.insertAdjacentHTML("beforeend", renderTask(task));
       });
     }
   });
